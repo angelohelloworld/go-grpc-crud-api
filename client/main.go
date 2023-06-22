@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 	"net/http"
+	"strconv"
 
 	pb "example.com/go-grpc-crud-api/proto"
 	"github.com/gin-gonic/gin"
@@ -58,7 +59,7 @@ type Publication struct {
 }
 
 type User struct {
-	UserID      int64  `json:"user_id"`
+	UserID      int    `json:"user_id"`
 	SRCode      string `json:"sr_code"`
 	Email       string `json:"email"`
 	Password    string `json:"password"`
@@ -79,11 +80,13 @@ func main() {
 	}
 
 	defer conn.Close()
-	client := pb.NewMovieServiceClient(conn)
+	client := pb.NewRMSServiceClient(conn)
 
 	r := gin.Default()
-	r.GET("/movies", func(ctx *gin.Context) {
-		res, err := client.GetMovies(ctx, &pb.ReadMoviesRequest{})
+
+	//table_authors
+	r.GET("/table_authors", func(ctx *gin.Context) {
+		res, err := client.GetAuthors(ctx, &pb.ReadAuthorsRequest{})
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"error": err,
@@ -91,12 +94,12 @@ func main() {
 			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"movies": res.Movies,
+			"table_authors": res.Authors,
 		})
 	})
-	r.GET("/movies/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
-		res, err := client.GetMovie(ctx, &pb.ReadMovieRequest{Id: id})
+	r.GET("/table_authors/:author_id", func(ctx *gin.Context) {
+		id := ctx.Param("author_id")
+		res, err := client.GetAuthor(ctx, &pb.ReadAuthorRequest{AuthorId: id})
 		if err != nil {
 			ctx.JSON(http.StatusNotFound, gin.H{
 				"message": err.Error(),
@@ -104,25 +107,29 @@ func main() {
 			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"movie": res.Movie,
+			"table_authors": res.Author,
 		})
 	})
-	r.POST("/movies", func(ctx *gin.Context) {
-		var movie Movie
+	r.POST("/table_authors", func(ctx *gin.Context) {
+		var author Author
 
-		err := ctx.ShouldBind(&movie)
+		err := ctx.ShouldBind(&author)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"error": err,
 			})
 			return
 		}
-		data := &pb.Movie{
-			Title: movie.Title,
-			Genre: movie.Genre,
+		data := &pb.Author{
+			AuthorId:     author.ID,
+			AuthorName:   author.AuthorName,
+			Gender:       author.AuthorGender,
+			TypeOfAuthor: author.TypeofAuthor,
+			Affiliation:  author.Affiliation,
+			Email:        author.AuthorEmail,
 		}
-		res, err := client.CreateMovie(ctx, &pb.CreateMovieRequest{
-			Movie: data,
+		res, err := client.CreateAuthor(ctx, &pb.CreateAuthorRequest{
+			Author: data,
 		})
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
@@ -131,23 +138,26 @@ func main() {
 			return
 		}
 		ctx.JSON(http.StatusCreated, gin.H{
-			"movie": res.Movie,
+			"": res.Author,
 		})
 	})
-	r.PUT("/movies/:id", func(ctx *gin.Context) {
-		var movie Movie
-		err := ctx.ShouldBind(&movie)
+	r.PUT("/table_authors/:author_id", func(ctx *gin.Context) {
+		var author Author
+		err := ctx.ShouldBind(&author)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
 			return
 		}
-		res, err := client.UpdateMovie(ctx, &pb.UpdateMovieRequest{
-			Movie: &pb.Movie{
-				Id:    movie.ID,
-				Title: movie.Title,
-				Genre: movie.Genre,
+		res, err := client.UpdateAuthor(ctx, &pb.UpdateAuthorRequest{
+			Author: &pb.Author{
+				AuthorId:     author.ID,
+				AuthorName:   author.AuthorName,
+				Gender:       author.AuthorGender,
+				TypeOfAuthor: author.TypeofAuthor,
+				Affiliation:  author.Affiliation,
+				Email:        author.AuthorEmail,
 			},
 		})
 		if err != nil {
@@ -157,14 +167,14 @@ func main() {
 			return
 		}
 		ctx.JSON(http.StatusOK, gin.H{
-			"movie": res.Movie,
+			"table_authors": res.Author,
 		})
 		return
 
 	})
-	r.DELETE("/movies/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
-		res, err := client.DeleteMovie(ctx, &pb.DeleteMovieRequest{Id: id})
+	r.DELETE("/table_authors/:author_id", func(ctx *gin.Context) {
+		id := ctx.Param("author_id")
+		res, err := client.DeleteAuthor(ctx, &pb.DeleteAuthorRequest{AuthorId: id})
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
@@ -173,12 +183,386 @@ func main() {
 		}
 		if res.Success == true {
 			ctx.JSON(http.StatusOK, gin.H{
-				"message": "Movie deleted successfully",
+				"message": "Author deleted successfully",
 			})
 			return
 		} else {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"error": "error deleting movie",
+				"error": "error deleting author",
+			})
+			return
+		}
+
+	})
+
+	//table_ipassets
+	r.GET("/table_ipassets", func(ctx *gin.Context) {
+		res, err := client.GetIP_Assets(ctx, &pb.ReadIP_AssetsRequest{})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_ipassets": res.IpAssets,
+		})
+	})
+	r.GET("/table_ipassets/:registration_number", func(ctx *gin.Context) {
+		id := ctx.Param("registration_number")
+		res, err := client.GetIP_Asset(ctx, &pb.ReadIP_AssetRequest{RegistrationNumber: id})
+		if err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_ipassets": res.IpAsset,
+		})
+	})
+	r.POST("/table_ipassets", func(ctx *gin.Context) {
+		var ipAsset IP_Asset
+
+		err := ctx.ShouldBind(&ipAsset)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		data := &pb.IP_Asset{
+			RegistrationNumber: ipAsset.RegistartionNumber,
+			TitleOfWork:        ipAsset.TitleOfWork,
+			TypeOfDocument:     ipAsset.TypeOfDocument,
+			ClassOfWork:        ipAsset.ClassOfWork,
+			DateOfCreation:     ipAsset.DateOfCreation,
+			DateRegistered:     ipAsset.DateRegistered,
+			Campus:             ipAsset.Campus,
+			College:            ipAsset.College,
+			Program:            ipAsset.Program,
+			Authors:            ipAsset.Authors,
+		}
+		res, err := client.CreateIP_Asset(ctx, &pb.CreateIP_AssetRequest{
+			IpAsset: data,
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusCreated, gin.H{
+			"table_ipassets": res.IpAsset,
+		})
+	})
+	r.PUT("/table_ipassets/:registration_number", func(ctx *gin.Context) {
+		var ipAsset IP_Asset
+		err := ctx.ShouldBind(&ipAsset)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		res, err := client.UpdateIP_Asset(ctx, &pb.UpdateIP_AssetRequest{
+			IpAsset: &pb.IP_Asset{
+				RegistrationNumber: ipAsset.RegistartionNumber,
+				TitleOfWork:        ipAsset.TitleOfWork,
+				TypeOfDocument:     ipAsset.TypeOfDocument,
+				ClassOfWork:        ipAsset.ClassOfWork,
+				DateOfCreation:     ipAsset.DateOfCreation,
+				DateRegistered:     ipAsset.DateRegistered,
+				Campus:             ipAsset.Campus,
+				College:            ipAsset.College,
+				Program:            ipAsset.Program,
+				Authors:            ipAsset.Authors,
+			},
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_ipassets": res.IpAsset,
+		})
+		return
+
+	})
+	r.DELETE("/table_ipassets/:registration_number", func(ctx *gin.Context) {
+		id := ctx.Param("registration_number")
+		res, err := client.DeleteIP_Asset(ctx, &pb.DeleteIP_AssetRequest{RegistrationNumber: id})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		if res.Success == true {
+			ctx.JSON(http.StatusOK, gin.H{
+				"message": "IP asset deleted successfully",
+			})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "error deleting ip asset",
+			})
+			return
+		}
+
+	})
+
+	//table_publications
+	r.GET("/table_publications", func(ctx *gin.Context) {
+		res, err := client.GetPublications(ctx, &pb.ReadPublicationsRequest{})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_publications": res.Publications,
+		})
+	})
+	r.GET("/table_publications/:publication_id", func(ctx *gin.Context) {
+		id := ctx.Param("publication_id")
+		res, err := client.GetPublication(ctx, &pb.ReadPublicationRequest{PublicationId: id})
+		if err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_publications": res.Publication,
+		})
+	})
+	r.POST("/table_publications", func(ctx *gin.Context) {
+		var publication Publication
+
+		err := ctx.ShouldBind(&publication)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		data := &pb.Publication{
+			PublicationId:        publication.PublicationID,
+			DatePublished:        publication.DatePublished,
+			Quartile:             publication.Quartile,
+			Authors:              publication.Authors,
+			Department:           publication.Department,
+			College:              publication.College,
+			Campus:               publication.Campus,
+			TitleOfPaper:         publication.TitleOfPaper,
+			TypeOfPublication:    publication.TypeOfPublication,
+			FundingSource:        publication.FundingSource,
+			NumberOfCitations:    publication.NumberOfCitations,
+			GoogleScholarDetails: publication.GoogleScholarDetails,
+			SdgNo:                publication.SDGNo,
+			FundingType:          publication.FundingType,
+			NatureOfFundings:     publication.NatureOfFundings,
+			Publisher:            publication.Publisher,
+			Abstract:             publication.Abstract,
+		}
+		res, err := client.CreatePublication(ctx, &pb.CreatePublicationRequest{
+			Publication: data,
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusCreated, gin.H{
+			"table_publications": res.Publication,
+		})
+	})
+	r.PUT("/table_publications/:publication_id", func(ctx *gin.Context) {
+		var publication Publication
+		err := ctx.ShouldBind(&publication)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		res, err := client.UpdatePublication(ctx, &pb.UpdatePublicationRequest{
+			Publication: &pb.Publication{
+				PublicationId:        publication.PublicationID,
+				DatePublished:        publication.DatePublished,
+				Quartile:             publication.Quartile,
+				Authors:              publication.Authors,
+				Department:           publication.Department,
+				College:              publication.College,
+				Campus:               publication.Campus,
+				TitleOfPaper:         publication.TitleOfPaper,
+				TypeOfPublication:    publication.TypeOfPublication,
+				FundingSource:        publication.FundingSource,
+				NumberOfCitations:    publication.NumberOfCitations,
+				GoogleScholarDetails: publication.GoogleScholarDetails,
+				SdgNo:                publication.SDGNo,
+				FundingType:          publication.FundingType,
+				NatureOfFundings:     publication.NatureOfFundings,
+				Publisher:            publication.Publisher,
+				Abstract:             publication.Abstract,
+			},
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_publications": res.Publication,
+		})
+		return
+
+	})
+	r.DELETE("/table_publications/:publication_id", func(ctx *gin.Context) {
+		id := ctx.Param("publication_id")
+		res, err := client.DeletePublication(ctx, &pb.DeletePublicationRequest{PublicationId: id})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		if res.Success == true {
+			ctx.JSON(http.StatusOK, gin.H{
+				"message": "Publication deleted successfully",
+			})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "error deleting publication",
+			})
+			return
+		}
+
+	})
+
+	//table_user
+	r.GET("/table_user", func(ctx *gin.Context) {
+		res, err := client.GetUsers(ctx, &pb.ReadUsersRequest{})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_user": res.Users,
+		})
+	})
+	r.GET("/table_user/:user_id", func(ctx *gin.Context) {
+		id := ctx.Param("user_id")
+		userID, _ := strconv.Atoi(id)
+		res, err := client.GetUser(ctx, &pb.ReadUserRequest{UserId: int32(userID)})
+		if err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_user": res.User,
+		})
+	})
+	r.POST("/table_user", func(ctx *gin.Context) {
+		var user User
+
+		err := ctx.ShouldBind(&user)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		data := &pb.User{
+			UserId:      int32(user.UserID),
+			SrCode:      user.SRCode,
+			Email:       user.Email,
+			Password:    user.Password,
+			AccountType: user.AccountType,
+			UserContact: user.UserContact,
+			UserImg:     user.UserImg,
+			UserFname:   user.UserFname,
+			UserLname:   user.UserLname,
+			UserMname:   user.UserMname,
+		}
+		res, err := client.CreateUser(ctx, &pb.CreateUserRequest{
+			User: data,
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusCreated, gin.H{
+			"table_user": res.User,
+		})
+	})
+	r.PUT("/table_user/:user_id", func(ctx *gin.Context) {
+		var user User
+		err := ctx.ShouldBind(&user)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		userID, _ := strconv.Atoi(ctx.Param("user_id"))
+		res, err := client.UpdateUser(ctx, &pb.UpdateUserRequest{
+			User: &pb.User{
+				UserId:      int32(userID),
+				SrCode:      user.SRCode,
+				Email:       user.Email,
+				Password:    user.Password,
+				AccountType: user.AccountType,
+				UserContact: user.UserContact,
+				UserImg:     user.UserImg,
+				UserFname:   user.UserFname,
+				UserLname:   user.UserLname,
+				UserMname:   user.UserMname,
+			},
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_user": res.User,
+		})
+		return
+
+	})
+	r.DELETE("/table_user/:user_id", func(ctx *gin.Context) {
+		id := ctx.Param("user_id")
+		userID, _ := strconv.Atoi(id)
+		res, err := client.DeleteUser(ctx, &pb.DeleteUserRequest{UserId: int32(userID)})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		if res.Success == true {
+			ctx.JSON(http.StatusOK, gin.H{
+				"message": "User deleted successfully",
+			})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "error deleting user",
 			})
 			return
 		}

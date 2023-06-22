@@ -74,7 +74,7 @@ type Publication struct {
 }
 
 type User struct {
-	UserID      string `gorm:"primarykey"`
+	UserID      int32 `gorm:"primarykey"`
 	SRCode      string
 	Email       string
 	Password    string
@@ -138,7 +138,7 @@ func (*server) CreateAuthor(ctx context.Context, req *pb.CreateAuthorRequest) (*
 		AuthorEmail:  author.GetEmail(),
 	}
 
-	res := DB.Create(&data)
+	res := DB.Table("table_authors").Create(&data)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("author creation unsuccessful")
 	}
@@ -157,7 +157,7 @@ func (*server) CreateAuthor(ctx context.Context, req *pb.CreateAuthorRequest) (*
 func (*server) GetAuthor(ctx context.Context, req *pb.ReadAuthorRequest) (*pb.ReadAuthorResponse, error) {
 	fmt.Println("Read Author", req.GetAuthorId())
 	var author Author
-	res := DB.Find(&author, "Authorid = ?", req.GetAuthorId())
+	res := DB.Table("table_authors").Find(&author, "Authorid = ?", req.GetAuthorId())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("Author not found")
 	}
@@ -176,7 +176,7 @@ func (*server) GetAuthor(ctx context.Context, req *pb.ReadAuthorRequest) (*pb.Re
 func (*server) GetAuthors(ctx context.Context, req *pb.ReadAuthorsRequest) (*pb.ReadAuthorsResponse, error) {
 	fmt.Println("Read Authors")
 	authors := []*pb.Author{}
-	res := DB.Find(&authors)
+	res := DB.Table("table_authors").Find(&authors)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("author not found")
 	}
@@ -190,7 +190,7 @@ func (*server) UpdateAuthor(ctx context.Context, req *pb.UpdateAuthorRequest) (*
 	var author Author
 	reqAuthor := req.GetAuthor()
 
-	res := DB.Model(&author).Where("Authorid=?", reqAuthor.AuthorId).Updates(
+	res := DB.Table("table_authors").Model(&author).Where("Authorid=?", reqAuthor.AuthorId).Updates(
 		Author{
 			AuthorName:   reqAuthor.AuthorName,
 			AuthorGender: reqAuthor.Gender,
@@ -218,7 +218,7 @@ func (*server) UpdateAuthor(ctx context.Context, req *pb.UpdateAuthorRequest) (*
 func (*server) DeleteAuthor(ctx context.Context, req *pb.DeleteAuthorRequest) (*pb.DeleteAuthorResponse, error) {
 	fmt.Println("Delete Author")
 	var author Author
-	res := DB.Where("Authorid = ?", req.GetAuthorId()).Delete(&author)
+	res := DB.Table("table_authors").Where("Authorid = ?", req.GetAuthorId()).Delete(&author)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("author not found")
 	}
@@ -247,7 +247,7 @@ func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest)
 		Authors:            ipAsset.GetAuthors(),
 	}
 
-	res := DB.Create(&data)
+	res := DB.Table("table_ipassets").Create(&data)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("IP asset creation unsuccessful")
 	}
@@ -271,7 +271,7 @@ func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest)
 func (*server) GetIPAsset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb.ReadIP_AssetResponse, error) {
 	fmt.Println("Read IP Asset", req.GetRegistrationNumber())
 	var ipAsset IP_Asset
-	res := DB.Find(&ipAsset, "RegistartionNumber = ?", req.GetRegistrationNumber())
+	res := DB.Table("table_ipassets").Find(&ipAsset, "RegistartionNumber = ?", req.GetRegistrationNumber())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("IP asset not found")
 	}
@@ -294,7 +294,7 @@ func (*server) GetIPAsset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb
 func (*server) GetIPAssets(ctx context.Context, req *pb.ReadIP_AssetsRequest) (*pb.ReadIP_AssetsResponse, error) {
 	fmt.Println("Read IP Assets")
 	ipAssets := []*pb.IP_Asset{}
-	res := DB.Find(&ipAssets)
+	res := DB.Table("table_ipassets").Find(&ipAssets)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("IP assets not found")
 	}
@@ -308,7 +308,7 @@ func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest)
 	var ipAsset IP_Asset
 	reqIPAsset := req.GetIpAsset()
 
-	res := DB.Model(&ipAsset).Where("RegistartionNumber = ?", reqIPAsset.RegistrationNumber).Updates(
+	res := DB.Table("table_ipassets").Model(&ipAsset).Where("RegistartionNumber = ?", reqIPAsset.RegistrationNumber).Updates(
 		IP_Asset{
 			TitleOfWork:    reqIPAsset.TitleOfWork,
 			TypeOfDocument: reqIPAsset.TypeOfDocument,
@@ -345,7 +345,7 @@ func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest)
 func (*server) DeleteIPAsset(ctx context.Context, req *pb.DeleteIP_AssetRequest) (*pb.DeleteIP_AssetResponse, error) {
 	fmt.Println("Delete IP Asset")
 	var ipAsset IP_Asset
-	res := DB.Where("RegistartionNumber = ?", req.GetRegistrationNumber()).Delete(&ipAsset)
+	res := DB.Table("table_ipassets").Where("RegistartionNumber = ?", req.GetRegistrationNumber()).Delete(&ipAsset)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("IP asset not found")
 	}
@@ -381,7 +381,7 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 		Abstract:             publication.GetAbstract(),
 	}
 
-	res := DB.Create(&data)
+	res := DB.Table("table_publications").Create(&data)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("publication creation unsuccessful")
 	}
@@ -412,7 +412,7 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 func (*server) GetPublication(ctx context.Context, req *pb.ReadPublicationRequest) (*pb.ReadPublicationResponse, error) {
 	fmt.Println("Read Publication", req.GetPublicationId())
 	var publication Publication
-	res := DB.Find(&publication, "PublicationID = ?", req.GetPublicationId())
+	res := DB.Table("table_publications").Find(&publication, "PublicationID = ?", req.GetPublicationId())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("publication not found")
 	}
@@ -443,7 +443,7 @@ func (*server) GetPublication(ctx context.Context, req *pb.ReadPublicationReques
 func (*server) GetPublications(ctx context.Context, req *pb.ReadPublicationsRequest) (*pb.ReadPublicationsResponse, error) {
 	fmt.Println("Read Publications")
 	publications := []*pb.Publication{}
-	res := DB.Find(&publications)
+	res := DB.Table("table_publications").Find(&publications)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("publications not found")
 	}
@@ -458,7 +458,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 	var publication Publication
 	reqPublication := req.GetPublication()
 
-	res := DB.Model(&publication).Where("PublicationID = ?", reqPublication.PublicationId).Updates(
+	res := DB.Table("table_publications").Model(&publication).Where("PublicationID = ?", reqPublication.PublicationId).Updates(
 		Publication{
 			DatePublished:        reqPublication.DatePublished,
 			Quartile:             reqPublication.Quartile,
@@ -508,7 +508,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 func (*server) DeletePublication(ctx context.Context, req *pb.DeletePublicationRequest) (*pb.DeletePublicationResponse, error) {
 	fmt.Println("Delete Publication")
 	var publication Publication
-	res := DB.Where("PublicationID = ?", req.GetPublicationId()).Delete(&publication)
+	res := DB.Table("table_publications").Where("PublicationID = ?", req.GetPublicationId()).Delete(&publication)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("publication not found")
 	}
@@ -522,7 +522,6 @@ func (*server) DeletePublication(ctx context.Context, req *pb.DeletePublicationR
 func (*server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
 	fmt.Println("Create User")
 	user := req.GetUser()
-	user.UserId = uuid.New().String()
 
 	data := User{
 		UserID:      user.GetUserId(),
@@ -537,7 +536,7 @@ func (*server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.C
 		UserMname:   user.GetUserMname(),
 	}
 
-	res := DB.Create(&data)
+	res := DB.Table("table_user").Create(&data)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("user creation unsuccessful")
 	}
@@ -561,7 +560,7 @@ func (*server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.C
 func (*server) GetUser(ctx context.Context, req *pb.ReadUserRequest) (*pb.ReadUserResponse, error) {
 	fmt.Println("Read User", req.GetUserId())
 	var user User
-	res := DB.Find(&user, "UserID = ?", req.GetUserId())
+	res := DB.Table("table_user").Find(&user, "UserID = ?", req.GetUserId())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("User not found")
 	}
@@ -585,7 +584,7 @@ func (*server) GetUser(ctx context.Context, req *pb.ReadUserRequest) (*pb.ReadUs
 func (*server) GetUsers(ctx context.Context, req *pb.ReadUsersRequest) (*pb.ReadUsersResponse, error) {
 	fmt.Println("Read Users")
 	users := []*pb.User{}
-	res := DB.Find(&users)
+	res := DB.Table("table_user").Find(&users)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("Users not found")
 	}
@@ -600,7 +599,7 @@ func (*server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.U
 	var user User
 	reqUser := req.GetUser()
 
-	res := DB.Model(&user).Where("UserID = ?", reqUser.GetUserId()).Updates(
+	res := DB.Table("table_user").Model(&user).Where("UserID = ?", reqUser.GetUserId()).Updates(
 		User{
 			SRCode:      reqUser.SrCode,
 			Email:       reqUser.Email,
@@ -635,7 +634,7 @@ func (*server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.U
 func (*server) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	fmt.Println("Delete User")
 	var user User
-	res := DB.Where("UserID = ?", req.GetUserId()).Delete(&user)
+	res := DB.Table("table_user").Where("UserID = ?", req.GetUserId()).Delete(&user)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("User not found")
 	}
