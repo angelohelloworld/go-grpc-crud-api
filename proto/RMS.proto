@@ -1,0 +1,213 @@
+syntax="proto3";
+ 
+package proto;
+ 
+option go_package="example.com/go-grpc-crud";
+
+message Author {
+   string author_id = 1;
+   string author_name = 2;
+   string gender = 3;
+   string type_of_author = 4;
+   string affiliation = 5;
+   string email = 6;
+ }
+
+message CreateAuthorRequest{
+   Author author = 1;
+}
+message CreateAuthorResponse{
+   Author author = 1;
+}
+message ReadAuthorRequest{
+   string author_id =1;
+}
+message ReadAuthorResponse{
+   Author author =1;
+}
+message ReadAuthorsRequest{
+ 
+}
+message ReadAuthorsResponse{
+   repeated Author authors =1;
+}
+message UpdateAuthorRequest{
+   Author author =1;
+}
+message UpdateAuthorResponse{
+   Author author =1;
+}
+message DeleteAuthorRequest{
+   string author_id =1;
+}
+message DeleteAuthorResponse{
+   bool success =1;
+}
+ 
+message IP_Asset {
+   string registration_number = 1;
+   string title_of_work = 2;
+   string type_of_document = 3;
+   string class_of_work = 4;
+   string date_of_creation = 5;
+   string date_registered = 6;
+   string campus = 7;
+   string college = 8;
+   string program = 9;
+   string authors = 10;
+ }
+ 
+message CreateIP_AssetRequest {
+   IP_Asset ip_asset = 1;
+}
+message CreateIP_AssetResponse {
+   IP_Asset ip_asset = 1;
+}
+message ReadIP_AssetRequest{
+   string registration_number =1;
+}
+message ReadIP_AssetResponse{
+   IP_Asset ip_asset = 1;
+}
+message ReadIP_AssetsRequest{
+ 
+}
+message ReadIP_AssetsResponse{
+   repeated IP_Asset ip_assets =1;
+}
+message UpdateIP_AssetRequest{
+   IP_Asset ip_asset = 1;
+}
+message UpdateIP_AssetResponse{
+   IP_Asset ip_asset = 1;
+}
+message DeleteIP_AssetRequest{
+   string registration_number =1;
+}
+message DeleteIP_AssetResponse{
+   bool success =1;
+}
+
+message Publication {
+   string publication_id = 1;
+   string date_published = 2;
+   string quartile = 3;
+   string authors = 4;
+   string department = 5;
+   string college = 6;
+   string campus = 7;
+   string title_of_paper = 8;
+   string type_of_publication = 9;
+   string funding_source = 10;
+   string number_of_citations = 11;
+   string google_scholar_details = 12;
+   string sdg_no = 13;
+   string funding_type = 14;
+   string nature_of_fundings = 15;
+   string publisher = 16;
+   string abstract = 17;
+}
+
+message CreatePublicationRequest {
+   Publication publication = 1;
+}
+message CreatePublicationResponse {
+   Publication publication = 1;
+}
+message ReadPublicationRequest {
+   string publication_id = 1;
+}
+message ReadPublicationResponse {
+   Publication publication = 1;
+}
+message ReadPublicationsRequest {
+
+}
+message ReadPublicationsResponse {
+   repeated Publication publications = 1;
+}
+message UpdatePublicationRequest {
+   Publication publication = 1;
+}
+message UpdatePublicationResponse {
+   Publication publication = 1;
+}
+message DeletePublicationRequest {
+   string publication_id = 1;
+}
+message DeletePublicationResponse {
+   bool success = 1;
+}
+
+message User {
+   string user_id = 1;
+   string sr_code = 2;
+   string email = 3;
+   string password = 4;
+   string account_type = 5;
+   string user_contact = 6;
+   string user_img = 7;
+   string user_fname = 8;
+   string user_lname = 9;
+   string user_mname = 10;
+}
+
+message CreateUserRequest {
+   User user = 1;
+}
+message CreateUserResponse {
+   User user = 1;
+}
+message ReadUserRequest {
+   int64 user_id = 1;
+}
+message ReadUserResponse {
+   User user = 1;
+}
+message ReadUsersRequest {
+
+}
+message ReadUsersResponse {
+   repeated User users = 1;
+}
+message UpdateUserRequest {
+   User user = 1;
+}
+message UpdateUserResponse {
+   User user = 1;
+}
+message DeleteUserRequest {
+   int64 user_id = 1;
+}
+message DeleteUserResponse {
+   bool success = 1;
+}
+
+ 
+
+service RMSService {
+   rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) {}
+   rpc GetAuthor(ReadAuthorRequest) returns (ReadAuthorResponse) {}
+   rpc GetAuthors(ReadAuthorsRequest) returns (ReadAuthorsResponse) {}
+   rpc UpdateAuthor(UpdateAuthorRequest) returns (UpdateAuthorResponse) {}
+   rpc DeleteAuthor(DeleteAuthorRequest) returns (DeleteAuthorResponse) {}
+ 
+   rpc CreateIP_Asset(CreateIP_AssetRequest) returns (CreateIP_AssetResponse) {}
+   rpc GetIP_Asset(ReadIP_AssetRequest) returns (ReadIP_AssetResponse) {}
+   rpc GetIP_Assets(ReadIP_AssetsRequest) returns (ReadIP_AssetsResponse) {}
+   rpc UpdateIP_Asset(UpdateIP_AssetRequest) returns (UpdateIP_AssetResponse) {}
+   rpc DeleteIP_Asset(DeleteIP_AssetRequest) returns (DeleteIP_AssetResponse) {}
+ 
+   rpc CreatePublication(CreatePublicationRequest) returns (CreatePublicationResponse) {}
+   rpc GetPublication(ReadPublicationRequest) returns (ReadPublicationResponse) {}
+   rpc GetPublications(ReadPublicationsRequest) returns (ReadPublicationsResponse) {}
+   rpc UpdatePublication(UpdatePublicationRequest) returns (UpdatePublicationResponse) {}
+   rpc DeletePublication(DeletePublicationRequest) returns (DeletePublicationResponse) {}
+ 
+   rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+   rpc GetUser(ReadUserRequest) returns (ReadUserResponse) {}
+   rpc GetUsers(ReadUsersRequest) returns (ReadUsersResponse) {}
+   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+ }
+ 

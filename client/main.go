@@ -24,7 +24,7 @@ type Author struct {
 	AuthorEmail  string `json:"email"`
 }
 
-type IP_Assets struct {
+type IP_Asset struct {
 	RegistartionNumber string `json:"registration_number"`
 	TitleOfWork        string `json:"title_of_work"`
 	TypeOfDocument     string `json:"type_of_document"`
@@ -37,7 +37,7 @@ type IP_Assets struct {
 	Authors            string `json:"authors"`
 }
 
-type Publications struct {
+type Publication struct {
 	PublicationID        string `json:"publication_id"`
 	DatePublished        string `json:"date_published"`
 	Quartile             string `json:"quartile"`
@@ -68,12 +68,6 @@ type User struct {
 	UserFname   string `json:"user_fname"`
 	UserLname   string `json:"user_lname"`
 	UserMname   string `json:"user_mname"`
-}
-
-type Movie struct {
-	ID    string `json:"id"`
-	Title string `json:"Title"`
-	Genre string `json:"genre"`
 }
 
 func main() {
