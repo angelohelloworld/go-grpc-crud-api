@@ -663,3 +663,8 @@ func main() {
 		log.Fatalf("failed to serve : %v", err)
 	}
 }
+
+// deploy server command
+// go run server/main.go
+// run client command
+// go run client/main.go
