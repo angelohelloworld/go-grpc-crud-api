@@ -183,8 +183,6 @@ message DeleteUserResponse {
    bool success = 1;
 }
 
- 
-
 service RMSService {
    rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) {}
    rpc GetAuthor(ReadAuthorRequest) returns (ReadAuthorResponse) {}
