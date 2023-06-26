@@ -37,7 +37,7 @@ type Author struct {
 }
 
 type IP_Asset struct {
-	RegistartionNumber string `gorm:"primarykey"`
+	RegistrationNumber string `gorm:"primarykey"`
 	TitleOfWork        string
 	TypeOfDocument     string
 	ClassOfWork        string
@@ -231,13 +231,13 @@ func (*server) DeleteAuthor(ctx context.Context, req *pb.DeleteAuthorRequest) (*
 }
 
 // IP_Asset
-func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest) (*pb.CreateIP_AssetResponse, error) {
-	fmt.Println("Create IP Asset")
+func (*server) CreateIP_Asset(ctx context.Context, req *pb.CreateIP_AssetRequest) (*pb.CreateIP_AssetResponse, error) {
+	fmt.Println("Create IP_Asset")
 	ipAsset := req.GetIpAsset()
 	ipAsset.RegistrationNumber = uuid.New().String()
 
 	data := IP_Asset{
-		RegistartionNumber: ipAsset.GetRegistrationNumber(),
+		RegistrationNumber: ipAsset.GetRegistrationNumber(),
 		TitleOfWork:        ipAsset.GetTitleOfWork(),
 		TypeOfDocument:     ipAsset.GetTypeOfDocument(),
 		ClassOfWork:        ipAsset.GetClassOfWork(),
@@ -254,9 +254,8 @@ func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest)
 
 	res := DB.Table("table_ipassets").Create(&data)
 	if res.RowsAffected == 0 {
-		return nil, errors.New("IP asset creation unsuccessful")
+		return nil, errors.New("IP_asset creation unsuccessful")
 	}
-
 	return &pb.CreateIP_AssetResponse{
 		IpAsset: &pb.IP_Asset{
 			RegistrationNumber: ipAsset.GetRegistrationNumber(),
@@ -276,16 +275,16 @@ func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest)
 	}, nil
 }
 
-func (*server) GetIPAsset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb.ReadIP_AssetResponse, error) {
-	fmt.Println("Read IP Asset", req.GetRegistrationNumber())
+func (*server) GetIP_Asset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb.ReadIP_AssetResponse, error) {
+	fmt.Println("Read IP_assets", req.GetRegistrationNumber())
 	var ipAsset IP_Asset
 	res := DB.Table("table_ipassets").Find(&ipAsset, "RegistartionNumber = ?", req.GetRegistrationNumber())
 	if res.RowsAffected == 0 {
-		return nil, errors.New("IP asset not found")
+		return nil, errors.New("IP_asset not found")
 	}
 	return &pb.ReadIP_AssetResponse{
 		IpAsset: &pb.IP_Asset{
-			RegistrationNumber: ipAsset.RegistartionNumber,
+			RegistrationNumber: ipAsset.RegistrationNumber,
 			TitleOfWork:        ipAsset.TitleOfWork,
 			TypeOfDocument:     ipAsset.TypeOfDocument,
 			ClassOfWork:        ipAsset.ClassOfWork,
@@ -302,20 +301,20 @@ func (*server) GetIPAsset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb
 	}, nil
 }
 
-func (*server) GetIPAssets(ctx context.Context, req *pb.ReadIP_AssetsRequest) (*pb.ReadIP_AssetsResponse, error) {
-	fmt.Println("Read IP Assets")
+func (*server) GetIP_Assets(ctx context.Context, req *pb.ReadIP_AssetsRequest) (*pb.ReadIP_AssetsResponse, error) {
+	fmt.Println("Read IP_assets")
 	ipAssets := []*pb.IP_Asset{}
 	res := DB.Table("table_ipassets").Find(&ipAssets)
 	if res.RowsAffected == 0 {
-		return nil, errors.New("IP assets not found")
+		return nil, errors.New("IP_asset not found")
 	}
 	return &pb.ReadIP_AssetsResponse{
 		IpAssets: ipAssets,
 	}, nil
 }
 
-func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest) (*pb.UpdateIP_AssetResponse, error) {
-	fmt.Println("Update IP Asset")
+func (*server) UpdateIP_Asset(ctx context.Context, req *pb.UpdateIP_AssetRequest) (*pb.UpdateIP_AssetResponse, error) {
+	fmt.Println("Update IP_assets")
 	var ipAsset IP_Asset
 	reqIPAsset := req.GetIpAsset()
 
@@ -333,16 +332,15 @@ func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest)
 			Hyperlink:      reqIPAsset.Hyperlink,
 			Status:         reqIPAsset.Status,
 			Certificate:    reqIPAsset.Certificate,
-		},
-	)
+		})
 
 	if res.RowsAffected == 0 {
-		return nil, errors.New("IP asset not found")
+		return nil, errors.New("IP_asset not found")
 	}
 
 	return &pb.UpdateIP_AssetResponse{
 		IpAsset: &pb.IP_Asset{
-			RegistrationNumber: ipAsset.RegistartionNumber,
+			RegistrationNumber: ipAsset.RegistrationNumber,
 			TitleOfWork:        ipAsset.TitleOfWork,
 			TypeOfDocument:     ipAsset.TypeOfDocument,
 			ClassOfWork:        ipAsset.ClassOfWork,
@@ -359,12 +357,12 @@ func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest)
 	}, nil
 }
 
-func (*server) DeleteIPAsset(ctx context.Context, req *pb.DeleteIP_AssetRequest) (*pb.DeleteIP_AssetResponse, error) {
-	fmt.Println("Delete IP Asset")
+func (*server) DeleteIP_Asset(ctx context.Context, req *pb.DeleteIP_AssetRequest) (*pb.DeleteIP_AssetResponse, error) {
+	fmt.Println("Delete IP_assets")
 	var ipAsset IP_Asset
 	res := DB.Table("table_ipassets").Where("RegistartionNumber = ?", req.GetRegistrationNumber()).Delete(&ipAsset)
 	if res.RowsAffected == 0 {
-		return nil, errors.New("IP asset not found")
+		return nil, errors.New("IP_asset not found")
 	}
 
 	return &pb.DeleteIP_AssetResponse{
