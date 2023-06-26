@@ -36,6 +36,9 @@ type IP_Asset struct {
 	College            string `json:"college"`
 	Program            string `json:"program"`
 	Authors            string `json:"authors"`
+	Hyperlink          string `json:"hyperlink"`
+	Status             string `json:"status"`
+	Certificate        string `json:"certificate"`
 }
 
 type Publication struct {
@@ -242,6 +245,9 @@ func main() {
 			College:            ipAsset.College,
 			Program:            ipAsset.Program,
 			Authors:            ipAsset.Authors,
+			Hyperlink:          ipAsset.Hyperlink,
+			Status:             ipAsset.Status,
+			Certificate:        ipAsset.Certificate,
 		}
 		res, err := client.CreateIP_Asset(ctx, &pb.CreateIP_AssetRequest{
 			IpAsset: data,
@@ -277,6 +283,9 @@ func main() {
 				College:            ipAsset.College,
 				Program:            ipAsset.Program,
 				Authors:            ipAsset.Authors,
+				Hyperlink:          ipAsset.Hyperlink,
+				Status:             ipAsset.Status,
+				Certificate:        ipAsset.Certificate,
 			},
 		})
 		if err != nil {

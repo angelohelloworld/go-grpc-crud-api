@@ -47,6 +47,9 @@ type IP_Asset struct {
 	College            string
 	Program            string
 	Authors            string
+	Hyperlink          string
+	Status             string
+	Certificate        string
 	CreatedAt          time.Time `gorm:"autoCreateTime:false"`
 	UpdatedAt          time.Time `gorm:"autoUpdateTime:false"`
 }
@@ -129,7 +132,6 @@ func (*server) CreateAuthor(ctx context.Context, req *pb.CreateAuthorRequest) (*
 	author.AuthorId = uuid.New().String()
 
 	data := Author{
-
 		ID:           author.GetAuthorId(),
 		AuthorName:   author.GetAuthorName(),
 		AuthorGender: author.GetGender(),
@@ -245,6 +247,9 @@ func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest)
 		College:            ipAsset.GetCollege(),
 		Program:            ipAsset.GetProgram(),
 		Authors:            ipAsset.GetAuthors(),
+		Hyperlink:          ipAsset.GetHyperlink(),
+		Status:             ipAsset.GetStatus(),
+		Certificate:        ipAsset.GetCertificate(),
 	}
 
 	res := DB.Table("table_ipassets").Create(&data)
@@ -264,6 +269,9 @@ func (*server) CreateIPAsset(ctx context.Context, req *pb.CreateIP_AssetRequest)
 			College:            ipAsset.GetCollege(),
 			Program:            ipAsset.GetProgram(),
 			Authors:            ipAsset.GetAuthors(),
+			Hyperlink:          ipAsset.GetHyperlink(),
+			Status:             ipAsset.GetStatus(),
+			Certificate:        ipAsset.GetCertificate(),
 		},
 	}, nil
 }
@@ -287,6 +295,9 @@ func (*server) GetIPAsset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb
 			College:            ipAsset.College,
 			Program:            ipAsset.Program,
 			Authors:            ipAsset.Authors,
+			Hyperlink:          ipAsset.Hyperlink,
+			Status:             ipAsset.Status,
+			Certificate:        ipAsset.Certificate,
 		},
 	}, nil
 }
@@ -319,6 +330,9 @@ func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest)
 			College:        reqIPAsset.College,
 			Program:        reqIPAsset.Program,
 			Authors:        reqIPAsset.Authors,
+			Hyperlink:      reqIPAsset.Hyperlink,
+			Status:         reqIPAsset.Status,
+			Certificate:    reqIPAsset.Certificate,
 		},
 	)
 
@@ -338,6 +352,9 @@ func (*server) UpdateIPAsset(ctx context.Context, req *pb.UpdateIP_AssetRequest)
 			College:            ipAsset.College,
 			Program:            ipAsset.Program,
 			Authors:            ipAsset.Authors,
+			Hyperlink:          ipAsset.Hyperlink,
+			Status:             ipAsset.Status,
+			Certificate:        ipAsset.Certificate,
 		},
 	}, nil
 }

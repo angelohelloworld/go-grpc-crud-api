@@ -55,6 +55,9 @@ message IP_Asset {
    string college = 8;
    string program = 9;
    string authors = 10;
+   string hyperlink = 11;
+   string status = 12;
+   string certificate = 13;
  }
  
 message CreateIP_AssetRequest {
