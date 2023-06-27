@@ -159,7 +159,7 @@ func (*server) CreateAuthor(ctx context.Context, req *pb.CreateAuthorRequest) (*
 func (*server) GetAuthor(ctx context.Context, req *pb.ReadAuthorRequest) (*pb.ReadAuthorResponse, error) {
 	fmt.Println("Read Author", req.GetAuthorId())
 	var author Author
-	res := DB.Table("table_authors").Find(&author, "Authorid = ?", req.GetAuthorId())
+	res := DB.Table("table_authors").Find(&author, "author_id = ?", req.GetAuthorId())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("Author not found")
 	}
@@ -192,7 +192,7 @@ func (*server) UpdateAuthor(ctx context.Context, req *pb.UpdateAuthorRequest) (*
 	var author Author
 	reqAuthor := req.GetAuthor()
 
-	res := DB.Table("table_authors").Model(&author).Where("Authorid=?", reqAuthor.AuthorId).Updates(
+	res := DB.Table("table_authors").Model(&author).Where("author_id = ?", reqAuthor.AuthorId).Updates(
 		Author{
 			AuthorName:   reqAuthor.AuthorName,
 			AuthorGender: reqAuthor.Gender,
@@ -220,7 +220,7 @@ func (*server) UpdateAuthor(ctx context.Context, req *pb.UpdateAuthorRequest) (*
 func (*server) DeleteAuthor(ctx context.Context, req *pb.DeleteAuthorRequest) (*pb.DeleteAuthorResponse, error) {
 	fmt.Println("Delete Author")
 	var author Author
-	res := DB.Table("table_authors").Where("Authorid = ?", req.GetAuthorId()).Delete(&author)
+	res := DB.Table("table_authors").Where("author_id = ?", req.GetAuthorId()).Delete(&author)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("author not found")
 	}
@@ -278,7 +278,7 @@ func (*server) CreateIP_Asset(ctx context.Context, req *pb.CreateIP_AssetRequest
 func (*server) GetIP_Asset(ctx context.Context, req *pb.ReadIP_AssetRequest) (*pb.ReadIP_AssetResponse, error) {
 	fmt.Println("Read IP_assets", req.GetRegistrationNumber())
 	var ipAsset IP_Asset
-	res := DB.Table("table_ipassets").Find(&ipAsset, "RegistartionNumber = ?", req.GetRegistrationNumber())
+	res := DB.Table("table_ipassets").Find(&ipAsset, "registration_number = ?", req.GetRegistrationNumber())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("IP_asset not found")
 	}
@@ -318,7 +318,7 @@ func (*server) UpdateIP_Asset(ctx context.Context, req *pb.UpdateIP_AssetRequest
 	var ipAsset IP_Asset
 	reqIPAsset := req.GetIpAsset()
 
-	res := DB.Table("table_ipassets").Model(&ipAsset).Where("RegistartionNumber = ?", reqIPAsset.RegistrationNumber).Updates(
+	res := DB.Table("table_ipassets").Model(&ipAsset).Where("registration_number = ?", reqIPAsset.RegistrationNumber).Updates(
 		IP_Asset{
 			TitleOfWork:    reqIPAsset.TitleOfWork,
 			TypeOfDocument: reqIPAsset.TypeOfDocument,
@@ -360,7 +360,7 @@ func (*server) UpdateIP_Asset(ctx context.Context, req *pb.UpdateIP_AssetRequest
 func (*server) DeleteIP_Asset(ctx context.Context, req *pb.DeleteIP_AssetRequest) (*pb.DeleteIP_AssetResponse, error) {
 	fmt.Println("Delete IP_assets")
 	var ipAsset IP_Asset
-	res := DB.Table("table_ipassets").Where("RegistartionNumber = ?", req.GetRegistrationNumber()).Delete(&ipAsset)
+	res := DB.Table("table_ipassets").Where("registration_number = ?", req.GetRegistrationNumber()).Delete(&ipAsset)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("IP_asset not found")
 	}
@@ -427,7 +427,7 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 func (*server) GetPublication(ctx context.Context, req *pb.ReadPublicationRequest) (*pb.ReadPublicationResponse, error) {
 	fmt.Println("Read Publication", req.GetPublicationId())
 	var publication Publication
-	res := DB.Table("table_publications").Find(&publication, "PublicationID = ?", req.GetPublicationId())
+	res := DB.Table("table_publications").Find(&publication, "publication_id = ?", req.GetPublicationId())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("publication not found")
 	}
@@ -473,7 +473,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 	var publication Publication
 	reqPublication := req.GetPublication()
 
-	res := DB.Table("table_publications").Model(&publication).Where("PublicationID = ?", reqPublication.PublicationId).Updates(
+	res := DB.Table("table_publications").Model(&publication).Where("publication_id = ?", reqPublication.PublicationId).Updates(
 		Publication{
 			DatePublished:        reqPublication.DatePublished,
 			Quartile:             reqPublication.Quartile,
@@ -523,7 +523,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 func (*server) DeletePublication(ctx context.Context, req *pb.DeletePublicationRequest) (*pb.DeletePublicationResponse, error) {
 	fmt.Println("Delete Publication")
 	var publication Publication
-	res := DB.Table("table_publications").Where("PublicationID = ?", req.GetPublicationId()).Delete(&publication)
+	res := DB.Table("table_publications").Where("publication_id = ?", req.GetPublicationId()).Delete(&publication)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("publication not found")
 	}
@@ -575,7 +575,7 @@ func (*server) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.C
 func (*server) GetUser(ctx context.Context, req *pb.ReadUserRequest) (*pb.ReadUserResponse, error) {
 	fmt.Println("Read User", req.GetUserId())
 	var user User
-	res := DB.Table("table_user").Find(&user, "UserID = ?", req.GetUserId())
+	res := DB.Table("table_user").Find(&user, "user_id = ?", req.GetUserId())
 	if res.RowsAffected == 0 {
 		return nil, errors.New("User not found")
 	}
@@ -614,7 +614,7 @@ func (*server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.U
 	var user User
 	reqUser := req.GetUser()
 
-	res := DB.Table("table_user").Model(&user).Where("UserID = ?", reqUser.GetUserId()).Updates(
+	res := DB.Table("table_user").Model(&user).Where("user_id = ?", reqUser.GetUserId()).Updates(
 		User{
 			SRCode:      reqUser.SrCode,
 			Email:       reqUser.Email,
@@ -649,7 +649,7 @@ func (*server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.U
 func (*server) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	fmt.Println("Delete User")
 	var user User
-	res := DB.Table("table_user").Where("UserID = ?", req.GetUserId()).Delete(&user)
+	res := DB.Table("table_user").Where("user_id = ?", req.GetUserId()).Delete(&user)
 	if res.RowsAffected == 0 {
 		return nil, errors.New("User not found")
 	}
