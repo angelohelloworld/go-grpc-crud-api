@@ -102,11 +102,11 @@ message Publication {
    string title_of_paper = 8;
    string type_of_publication = 9;
    string funding_source = 10;
-   string number_of_citations = 11;
+   int32 number_of_citation = 11;
    string google_scholar_details = 12;
    string sdg_no = 13;
    string funding_type = 14;
-   string nature_of_fundings = 15;
+   string nature_of_funding = 15;
    string publisher = 16;
    string abstract = 17;
 }

@@ -52,11 +52,11 @@ type Publication struct {
 	TitleOfPaper         string `json:"title_of_paper"`
 	TypeOfPublication    string `json:"type_of_publication"`
 	FundingSource        string `json:"funding_source"`
-	NumberOfCitations    string `json:"number_of_citations"`
+	NumberOfCitations    int    `json:"number_of_citation"`
 	GoogleScholarDetails string `json:"google_scholar_details"`
 	SDGNo                string `json:"sdg_no"`
 	FundingType          string `json:"funding_type"`
-	NatureOfFundings     string `json:"nature_of_fundings"`
+	NatureOfFunding      string `json:"nature_of_funding"`
 	Publisher            string `json:"publisher"`
 	Abstract             string `json:"abstract"`
 }
@@ -370,11 +370,11 @@ func main() {
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitations:    publication.NumberOfCitations,
+			NumberOfCitation:     int32(publication.NumberOfCitations),
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
-			NatureOfFundings:     publication.NatureOfFundings,
+			NatureOfFunding:      publication.NatureOfFunding,
 			Publisher:            publication.Publisher,
 			Abstract:             publication.Abstract,
 		}
@@ -400,6 +400,7 @@ func main() {
 			})
 			return
 		}
+		numberOfCitations, _ := strconv.Atoi(ctx.Param("number_of_citation"))
 		res, err := client.UpdatePublication(ctx, &pb.UpdatePublicationRequest{
 			Publication: &pb.Publication{
 				PublicationId:        publication.PublicationID,
@@ -412,11 +413,11 @@ func main() {
 				TitleOfPaper:         publication.TitleOfPaper,
 				TypeOfPublication:    publication.TypeOfPublication,
 				FundingSource:        publication.FundingSource,
-				NumberOfCitations:    publication.NumberOfCitations,
+				NumberOfCitation:     int32(numberOfCitations),
 				GoogleScholarDetails: publication.GoogleScholarDetails,
 				SdgNo:                publication.SDGNo,
 				FundingType:          publication.FundingType,
-				NatureOfFundings:     publication.NatureOfFundings,
+				NatureOfFunding:      publication.NatureOfFunding,
 				Publisher:            publication.Publisher,
 				Abstract:             publication.Abstract,
 			},

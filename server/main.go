@@ -65,11 +65,11 @@ type Publication struct {
 	TitleOfPaper         string
 	TypeOfPublication    string
 	FundingSource        string
-	NumberOfCitations    string
+	NumberOfCitations    int32
 	GoogleScholarDetails string
 	SDGNo                string
 	FundingType          string
-	NatureOfFundings     string
+	NatureOfFunding      string
 	Publisher            string
 	Abstract             string
 	CreatedAt            time.Time `gorm:"autoCreateTime:false"`
@@ -387,11 +387,11 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 		TitleOfPaper:         publication.GetTitleOfPaper(),
 		TypeOfPublication:    publication.GetTypeOfPublication(),
 		FundingSource:        publication.GetFundingSource(),
-		NumberOfCitations:    publication.GetNumberOfCitations(),
+		NumberOfCitations:    publication.GetNumberOfCitation(),
 		GoogleScholarDetails: publication.GetGoogleScholarDetails(),
 		SDGNo:                publication.GetSdgNo(),
 		FundingType:          publication.GetFundingType(),
-		NatureOfFundings:     publication.GetNatureOfFundings(),
+		NatureOfFunding:      publication.GetNatureOfFunding(),
 		Publisher:            publication.GetPublisher(),
 		Abstract:             publication.GetAbstract(),
 	}
@@ -413,11 +413,11 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 			TitleOfPaper:         publication.GetTitleOfPaper(),
 			TypeOfPublication:    publication.GetTypeOfPublication(),
 			FundingSource:        publication.GetFundingSource(),
-			NumberOfCitations:    publication.GetNumberOfCitations(),
+			NumberOfCitation:     publication.GetNumberOfCitation(),
 			GoogleScholarDetails: publication.GetGoogleScholarDetails(),
 			SdgNo:                publication.GetSdgNo(),
 			FundingType:          publication.GetFundingType(),
-			NatureOfFundings:     publication.GetNatureOfFundings(),
+			NatureOfFunding:      publication.GetNatureOfFunding(),
 			Publisher:            publication.GetPublisher(),
 			Abstract:             publication.GetAbstract(),
 		},
@@ -444,11 +444,11 @@ func (*server) GetPublication(ctx context.Context, req *pb.ReadPublicationReques
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitations:    publication.NumberOfCitations,
+			NumberOfCitation:     publication.NumberOfCitations,
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
-			NatureOfFundings:     publication.NatureOfFundings,
+			NatureOfFunding:      publication.NatureOfFunding,
 			Publisher:            publication.Publisher,
 			Abstract:             publication.Abstract,
 		},
@@ -484,11 +484,11 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 			TitleOfPaper:         reqPublication.TitleOfPaper,
 			TypeOfPublication:    reqPublication.TypeOfPublication,
 			FundingSource:        reqPublication.FundingSource,
-			NumberOfCitations:    reqPublication.NumberOfCitations,
+			NumberOfCitations:    reqPublication.NumberOfCitation,
 			GoogleScholarDetails: reqPublication.GoogleScholarDetails,
 			SDGNo:                reqPublication.SdgNo,
 			FundingType:          reqPublication.FundingType,
-			NatureOfFundings:     reqPublication.NatureOfFundings,
+			NatureOfFunding:      reqPublication.NatureOfFunding,
 			Publisher:            reqPublication.Publisher,
 			Abstract:             reqPublication.Abstract,
 		})
@@ -509,11 +509,11 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitations:    publication.NumberOfCitations,
+			NumberOfCitation:     publication.NumberOfCitations,
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
-			NatureOfFundings:     publication.NatureOfFundings,
+			NatureOfFunding:      publication.NatureOfFunding,
 			Publisher:            publication.Publisher,
 			Abstract:             publication.Abstract,
 		},
