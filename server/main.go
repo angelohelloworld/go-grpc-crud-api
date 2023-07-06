@@ -92,9 +92,9 @@ type User struct {
 }
 
 func DatabaseConnection() {
-	host := "localhost"
+	host := "127.0.0.1"
 	port := "5432"
-	dbName := "RMS_db"
+	dbName := "rms_db"
 	dbUser := "postgres"
 	password := "password"
 	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
