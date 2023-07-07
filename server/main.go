@@ -32,8 +32,8 @@ type Author struct {
 	TypeofAuthor string
 	Affiliation  string
 	AuthorEmail  string
-	CreatedAt    time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt    time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt    time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type IP_Asset struct {
@@ -50,8 +50,8 @@ type IP_Asset struct {
 	Hyperlink          string
 	Status             string
 	Certificate        string
-	CreatedAt          time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt          time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt          time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt          time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type Publication struct {
@@ -72,8 +72,8 @@ type Publication struct {
 	NatureOfFunding      string
 	Publisher            string
 	Abstract             string
-	CreatedAt            time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt            time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt            time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt            time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type User struct {
@@ -87,8 +87,8 @@ type User struct {
 	UserFname   string
 	UserLname   string
 	UserMname   string
-	CreatedAt   time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt   time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt   time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type Log struct {
@@ -96,8 +96,8 @@ type Log struct {
 	UserID      int32
 	Activity    string
 	Description string
-	CreatedAt   time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt   time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt   time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime:true"`
 }
 
 func DatabaseConnection() {
