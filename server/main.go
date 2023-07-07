@@ -91,6 +91,14 @@ type User struct {
 	UpdatedAt   time.Time `gorm:"autoUpdateTime:false"`
 }
 
+type Log struct {
+	LogID       string `gorm:"primarykey"`
+	Activity    string
+	Description string
+	CreatedAt   time.Time `gorm:"autoCreateTime:false"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime:false"`
+}
+
 func DatabaseConnection() {
 	host := "localhost"
 	port := "5432"
@@ -113,6 +121,7 @@ func DatabaseConnection() {
 	DB.AutoMigrate(&IP_Asset{})
 	DB.AutoMigrate(&Publication{})
 	DB.AutoMigrate(&User{})
+	DB.AutoMigrate(&Log{})
 
 	fmt.Println("Database connection successful...")
 }
@@ -655,6 +664,97 @@ func (*server) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.D
 	}
 
 	return &pb.DeleteUserResponse{
+		Success: true,
+	}, nil
+}
+
+// Log
+func (*server) CreateLog(ctx context.Context, req *pb.CreateLogRequest) (*pb.CreateLogResponse, error) {
+	fmt.Println("Create Log")
+	log := req.GetLog()
+
+	data := Log{
+		LogID:       log.GetLogId(),
+		Activity:    log.GetActivity(),
+		Description: log.GetDescription(),
+	}
+
+	res := DB.Table("table_log").Create(&data)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("log creation unsuccessful")
+	}
+
+	return &pb.CreateLogResponse{
+		Log: &pb.Log{
+			LogId:       log.GetLogId(),
+			Activity:    log.GetActivity(),
+			Description: log.GetDescription(),
+		},
+	}, nil
+}
+
+func (*server) GetLog(ctx context.Context, req *pb.ReadLogRequest) (*pb.ReadLogResponse, error) {
+	fmt.Println("Read Log", req.GetLogId())
+	var log Log
+	res := DB.Table("table_log").Find(&log, "log_id = ?", req.GetLogId())
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Log not found")
+	}
+
+	return &pb.ReadLogResponse{
+		Log: &pb.Log{
+			LogId:       log.LogID,
+			Activity:    log.Activity,
+			Description: log.Description,
+		},
+	}, nil
+}
+
+func (*server) GetLogs(ctx context.Context, req *pb.ReadLogsRequest) (*pb.ReadLogsResponse, error) {
+	fmt.Println("Read Logs")
+	logs := []*pb.Log{}
+	res := DB.Table("table_log").Find(&logs)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Logs not found")
+	}
+
+	return &pb.ReadLogsResponse{
+		Logs: logs,
+	}, nil
+}
+
+func (*server) UpdateLog(ctx context.Context, req *pb.UpdateLogRequest) (*pb.UpdateLogResponse, error) {
+	fmt.Println("Update Log")
+	var log Log
+	reqLog := req.GetLog()
+
+	res := DB.Table("table_log").Model(&log).Where("log_id = ?", reqLog.GetLogId()).Updates(
+		Log{
+			Activity:    reqLog.Activity,
+			Description: reqLog.Description,
+		})
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Log not found")
+	}
+
+	return &pb.UpdateLogResponse{
+		Log: &pb.Log{
+			LogId:       log.LogID,
+			Activity:    log.Activity,
+			Description: log.Description,
+		},
+	}, nil
+}
+
+func (*server) DeleteLog(ctx context.Context, req *pb.DeleteLogRequest) (*pb.DeleteLogResponse, error) {
+	fmt.Println("Delete Log")
+	var log Log
+	res := DB.Table("table_log").Where("log_id = ?", req.GetLogId()).Delete(&log)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Log not found")
+	}
+
+	return &pb.DeleteLogResponse{
 		Success: true,
 	}, nil
 }

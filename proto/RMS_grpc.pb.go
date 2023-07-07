@@ -42,6 +42,11 @@ type RMSServiceClient interface {
 	GetUsers(ctx context.Context, in *ReadUsersRequest, opts ...grpc.CallOption) (*ReadUsersResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserResponse, error)
+	CreateLog(ctx context.Context, in *CreateLogRequest, opts ...grpc.CallOption) (*CreateLogResponse, error)
+	GetLog(ctx context.Context, in *ReadLogRequest, opts ...grpc.CallOption) (*ReadLogResponse, error)
+	GetLogs(ctx context.Context, in *ReadLogsRequest, opts ...grpc.CallOption) (*ReadLogsResponse, error)
+	UpdateLog(ctx context.Context, in *UpdateLogRequest, opts ...grpc.CallOption) (*UpdateLogResponse, error)
+	DeleteLog(ctx context.Context, in *DeleteLogRequest, opts ...grpc.CallOption) (*DeleteLogResponse, error)
 }
 
 type rMSServiceClient struct {
@@ -232,6 +237,51 @@ func (c *rMSServiceClient) DeleteUser(ctx context.Context, in *DeleteUserRequest
 	return out, nil
 }
 
+func (c *rMSServiceClient) CreateLog(ctx context.Context, in *CreateLogRequest, opts ...grpc.CallOption) (*CreateLogResponse, error) {
+	out := new(CreateLogResponse)
+	err := c.cc.Invoke(ctx, "/proto.RMSService/CreateLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rMSServiceClient) GetLog(ctx context.Context, in *ReadLogRequest, opts ...grpc.CallOption) (*ReadLogResponse, error) {
+	out := new(ReadLogResponse)
+	err := c.cc.Invoke(ctx, "/proto.RMSService/GetLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rMSServiceClient) GetLogs(ctx context.Context, in *ReadLogsRequest, opts ...grpc.CallOption) (*ReadLogsResponse, error) {
+	out := new(ReadLogsResponse)
+	err := c.cc.Invoke(ctx, "/proto.RMSService/GetLogs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rMSServiceClient) UpdateLog(ctx context.Context, in *UpdateLogRequest, opts ...grpc.CallOption) (*UpdateLogResponse, error) {
+	out := new(UpdateLogResponse)
+	err := c.cc.Invoke(ctx, "/proto.RMSService/UpdateLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rMSServiceClient) DeleteLog(ctx context.Context, in *DeleteLogRequest, opts ...grpc.CallOption) (*DeleteLogResponse, error) {
+	out := new(DeleteLogResponse)
+	err := c.cc.Invoke(ctx, "/proto.RMSService/DeleteLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RMSServiceServer is the server API for RMSService service.
 // All implementations must embed UnimplementedRMSServiceServer
 // for forward compatibility
@@ -256,6 +306,11 @@ type RMSServiceServer interface {
 	GetUsers(context.Context, *ReadUsersRequest) (*ReadUsersResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error)
+	CreateLog(context.Context, *CreateLogRequest) (*CreateLogResponse, error)
+	GetLog(context.Context, *ReadLogRequest) (*ReadLogResponse, error)
+	GetLogs(context.Context, *ReadLogsRequest) (*ReadLogsResponse, error)
+	UpdateLog(context.Context, *UpdateLogRequest) (*UpdateLogResponse, error)
+	DeleteLog(context.Context, *DeleteLogRequest) (*DeleteLogResponse, error)
 	mustEmbedUnimplementedRMSServiceServer()
 }
 
@@ -322,6 +377,21 @@ func (UnimplementedRMSServiceServer) UpdateUser(context.Context, *UpdateUserRequ
 }
 func (UnimplementedRMSServiceServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
+}
+func (UnimplementedRMSServiceServer) CreateLog(context.Context, *CreateLogRequest) (*CreateLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateLog not implemented")
+}
+func (UnimplementedRMSServiceServer) GetLog(context.Context, *ReadLogRequest) (*ReadLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLog not implemented")
+}
+func (UnimplementedRMSServiceServer) GetLogs(context.Context, *ReadLogsRequest) (*ReadLogsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLogs not implemented")
+}
+func (UnimplementedRMSServiceServer) UpdateLog(context.Context, *UpdateLogRequest) (*UpdateLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateLog not implemented")
+}
+func (UnimplementedRMSServiceServer) DeleteLog(context.Context, *DeleteLogRequest) (*DeleteLogResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteLog not implemented")
 }
 func (UnimplementedRMSServiceServer) mustEmbedUnimplementedRMSServiceServer() {}
 
@@ -696,6 +766,96 @@ func _RMSService_DeleteUser_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RMSService_CreateLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RMSServiceServer).CreateLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RMSService/CreateLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RMSServiceServer).CreateLog(ctx, req.(*CreateLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RMSService_GetLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RMSServiceServer).GetLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RMSService/GetLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RMSServiceServer).GetLog(ctx, req.(*ReadLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RMSService_GetLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadLogsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RMSServiceServer).GetLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RMSService/GetLogs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RMSServiceServer).GetLogs(ctx, req.(*ReadLogsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RMSService_UpdateLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RMSServiceServer).UpdateLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RMSService/UpdateLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RMSServiceServer).UpdateLog(ctx, req.(*UpdateLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RMSService_DeleteLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RMSServiceServer).DeleteLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RMSService/DeleteLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RMSServiceServer).DeleteLog(ctx, req.(*DeleteLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RMSService_ServiceDesc is the grpc.ServiceDesc for RMSService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -782,6 +942,26 @@ var RMSService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteUser",
 			Handler:    _RMSService_DeleteUser_Handler,
+		},
+		{
+			MethodName: "CreateLog",
+			Handler:    _RMSService_CreateLog_Handler,
+		},
+		{
+			MethodName: "GetLog",
+			Handler:    _RMSService_GetLog_Handler,
+		},
+		{
+			MethodName: "GetLogs",
+			Handler:    _RMSService_GetLogs_Handler,
+		},
+		{
+			MethodName: "UpdateLog",
+			Handler:    _RMSService_UpdateLog_Handler,
+		},
+		{
+			MethodName: "DeleteLog",
+			Handler:    _RMSService_DeleteLog_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
