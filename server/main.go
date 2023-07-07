@@ -93,6 +93,7 @@ type User struct {
 
 type Log struct {
 	LogID       string `gorm:"primarykey"`
+	UserID      int32
 	Activity    string
 	Description string
 	CreatedAt   time.Time `gorm:"autoCreateTime:false"`
@@ -675,6 +676,7 @@ func (*server) CreateLog(ctx context.Context, req *pb.CreateLogRequest) (*pb.Cre
 
 	data := Log{
 		LogID:       log.GetLogId(),
+		UserID:      log.GetUserId(),
 		Activity:    log.GetActivity(),
 		Description: log.GetDescription(),
 	}
@@ -687,6 +689,7 @@ func (*server) CreateLog(ctx context.Context, req *pb.CreateLogRequest) (*pb.Cre
 	return &pb.CreateLogResponse{
 		Log: &pb.Log{
 			LogId:       log.GetLogId(),
+			UserId:      log.GetUserId(),
 			Activity:    log.GetActivity(),
 			Description: log.GetDescription(),
 		},
@@ -704,6 +707,7 @@ func (*server) GetLog(ctx context.Context, req *pb.ReadLogRequest) (*pb.ReadLogR
 	return &pb.ReadLogResponse{
 		Log: &pb.Log{
 			LogId:       log.LogID,
+			UserId:      log.UserID,
 			Activity:    log.Activity,
 			Description: log.Description,
 		},
@@ -730,6 +734,7 @@ func (*server) UpdateLog(ctx context.Context, req *pb.UpdateLogRequest) (*pb.Upd
 
 	res := DB.Table("table_log").Model(&log).Where("log_id = ?", reqLog.GetLogId()).Updates(
 		Log{
+			UserID:      reqLog.UserId,
 			Activity:    reqLog.Activity,
 			Description: reqLog.Description,
 		})
@@ -740,6 +745,7 @@ func (*server) UpdateLog(ctx context.Context, req *pb.UpdateLogRequest) (*pb.Upd
 	return &pb.UpdateLogResponse{
 		Log: &pb.Log{
 			LogId:       log.LogID,
+			UserId:      log.UserID,
 			Activity:    log.Activity,
 			Description: log.Description,
 		},

@@ -188,8 +188,9 @@ message DeleteUserResponse {
 
 message Log {
    string log_id = 1;
-   string activity = 2;
-   string description = 3;
+   int32 user_id = 2;
+   string activity = 3;
+   string description = 4;
 }
 
 message CreateLogRequest {

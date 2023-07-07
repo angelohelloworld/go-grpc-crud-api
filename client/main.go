@@ -76,6 +76,7 @@ type User struct {
 
 type Log struct {
 	LogID       string `json:"log_id"`
+	UserID      int    `json:"user_id"`
 	Activity    string `json:"activity"`
 	Description string `json:"description"`
 }
@@ -623,6 +624,7 @@ func main() {
 		}
 		data := &pb.Log{
 			LogId:       log.LogID,
+			UserId:      int32(log.UserID),
 			Activity:    log.Activity,
 			Description: log.Description,
 		}
@@ -651,6 +653,7 @@ func main() {
 		res, err := client.UpdateLog(ctx, &pb.UpdateLogRequest{
 			Log: &pb.Log{
 				LogId:       log.LogID,
+				UserId:      int32(log.UserID),
 				Activity:    log.Activity,
 				Description: log.Description,
 			},
