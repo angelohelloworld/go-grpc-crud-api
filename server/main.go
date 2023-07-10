@@ -65,7 +65,7 @@ type Publication struct {
 	TitleOfPaper         string
 	TypeOfPublication    string
 	FundingSource        string
-	NumberOfCitations    int32
+	NumberOfCitation     int32
 	GoogleScholarDetails string
 	SDGNo                string
 	FundingType          string
@@ -398,7 +398,7 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 		TitleOfPaper:         publication.GetTitleOfPaper(),
 		TypeOfPublication:    publication.GetTypeOfPublication(),
 		FundingSource:        publication.GetFundingSource(),
-		NumberOfCitations:    publication.GetNumberOfCitation(),
+		NumberOfCitation:     publication.GetNumberOfCitation(),
 		GoogleScholarDetails: publication.GetGoogleScholarDetails(),
 		SDGNo:                publication.GetSdgNo(),
 		FundingType:          publication.GetFundingType(),
@@ -455,7 +455,7 @@ func (*server) GetPublication(ctx context.Context, req *pb.ReadPublicationReques
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitation:     publication.NumberOfCitations,
+			NumberOfCitation:     publication.NumberOfCitation,
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
@@ -495,7 +495,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 			TitleOfPaper:         reqPublication.TitleOfPaper,
 			TypeOfPublication:    reqPublication.TypeOfPublication,
 			FundingSource:        reqPublication.FundingSource,
-			NumberOfCitations:    reqPublication.NumberOfCitation,
+			NumberOfCitation:     reqPublication.NumberOfCitation,
 			GoogleScholarDetails: reqPublication.GoogleScholarDetails,
 			SDGNo:                reqPublication.SdgNo,
 			FundingType:          reqPublication.FundingType,
@@ -520,7 +520,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitation:     publication.NumberOfCitations,
+			NumberOfCitation:     publication.NumberOfCitation,
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,

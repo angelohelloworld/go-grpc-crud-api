@@ -52,7 +52,7 @@ type Publication struct {
 	TitleOfPaper         string `json:"title_of_paper"`
 	TypeOfPublication    string `json:"type_of_publication"`
 	FundingSource        string `json:"funding_source"`
-	NumberOfCitations    int    `json:"number_of_citation"`
+	NumberOfCitation     int    `json:"number_of_citation"`
 	GoogleScholarDetails string `json:"google_scholar_details"`
 	SDGNo                string `json:"sdg_no"`
 	FundingType          string `json:"funding_type"`
@@ -378,7 +378,7 @@ func main() {
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitation:     int32(publication.NumberOfCitations),
+			NumberOfCitation:     int32(publication.NumberOfCitation),
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
@@ -408,7 +408,7 @@ func main() {
 			})
 			return
 		}
-		numberOfCitations, _ := strconv.Atoi(ctx.Param("number_of_citation"))
+		numberOfCitation, _ := strconv.Atoi(ctx.Param("number_of_citation"))
 		res, err := client.UpdatePublication(ctx, &pb.UpdatePublicationRequest{
 			Publication: &pb.Publication{
 				PublicationId:        publication.PublicationID,
@@ -421,7 +421,7 @@ func main() {
 				TitleOfPaper:         publication.TitleOfPaper,
 				TypeOfPublication:    publication.TypeOfPublication,
 				FundingSource:        publication.FundingSource,
-				NumberOfCitation:     int32(numberOfCitations),
+				NumberOfCitation:     int32(numberOfCitation),
 				GoogleScholarDetails: publication.GoogleScholarDetails,
 				SdgNo:                publication.SDGNo,
 				FundingType:          publication.FundingType,
