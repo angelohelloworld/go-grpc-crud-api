@@ -186,6 +186,45 @@ message DeleteUserResponse {
    bool success = 1;
 }
 
+message Log {
+   string log_id = 1;
+   string date_time = 2;
+   int32 user_id = 3;
+   string activity = 4;
+   string description = 5;
+}
+
+message CreateLogRequest {
+   Log log = 1;
+}
+message CreateLogResponse {
+   Log log = 1;
+}
+message ReadLogRequest {
+   string log_id = 1;
+}
+message ReadLogResponse {
+   Log log = 1;
+}
+message ReadLogsRequest {
+
+}
+message ReadLogsResponse {
+   repeated Log logs = 1;
+}
+message UpdateLogRequest {
+   Log log = 1;
+}
+message UpdateLogResponse {
+   Log log = 1;
+}
+message DeleteLogRequest {
+   string log_id = 1;
+}
+message DeleteLogResponse {
+   bool success = 1;
+}
+
 service RMSService {
    rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) {}
    rpc GetAuthor(ReadAuthorRequest) returns (ReadAuthorResponse) {}
@@ -210,5 +249,12 @@ service RMSService {
    rpc GetUsers(ReadUsersRequest) returns (ReadUsersResponse) {}
    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
    rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+   
+   rpc CreateLog(CreateLogRequest) returns (CreateLogResponse) {}
+   rpc GetLog(ReadLogRequest) returns (ReadLogResponse) {}
+   rpc GetLogs(ReadLogsRequest) returns (ReadLogsResponse) {}
+   rpc UpdateLog(UpdateLogRequest) returns (UpdateLogResponse) {}
+   rpc DeleteLog(DeleteLogRequest) returns (DeleteLogResponse) {}
+
  }
  

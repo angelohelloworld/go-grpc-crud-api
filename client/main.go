@@ -52,7 +52,7 @@ type Publication struct {
 	TitleOfPaper         string `json:"title_of_paper"`
 	TypeOfPublication    string `json:"type_of_publication"`
 	FundingSource        string `json:"funding_source"`
-	NumberOfCitations    int    `json:"number_of_citation"`
+	NumberOfCitation     int    `json:"number_of_citation"`
 	GoogleScholarDetails string `json:"google_scholar_details"`
 	SDGNo                string `json:"sdg_no"`
 	FundingType          string `json:"funding_type"`
@@ -72,6 +72,14 @@ type User struct {
 	UserFname   string `json:"user_fname"`
 	UserLname   string `json:"user_lname"`
 	UserMname   string `json:"user_mname"`
+}
+
+type Log struct {
+	LogID       string `json:"log_id"`
+	DateTime    string `json:"date_time"`
+	UserID      int    `json:"user_id"`
+	Activity    string `json:"activity"`
+	Description string `json:"description"`
 }
 
 func main() {
@@ -370,7 +378,7 @@ func main() {
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitation:     int32(publication.NumberOfCitations),
+			NumberOfCitation:     int32(publication.NumberOfCitation),
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
@@ -400,7 +408,7 @@ func main() {
 			})
 			return
 		}
-		numberOfCitations, _ := strconv.Atoi(ctx.Param("number_of_citation"))
+		numberOfCitation, _ := strconv.Atoi(ctx.Param("number_of_citation"))
 		res, err := client.UpdatePublication(ctx, &pb.UpdatePublicationRequest{
 			Publication: &pb.Publication{
 				PublicationId:        publication.PublicationID,
@@ -413,7 +421,7 @@ func main() {
 				TitleOfPaper:         publication.TitleOfPaper,
 				TypeOfPublication:    publication.TypeOfPublication,
 				FundingSource:        publication.FundingSource,
-				NumberOfCitation:     int32(numberOfCitations),
+				NumberOfCitation:     int32(numberOfCitation),
 				GoogleScholarDetails: publication.GoogleScholarDetails,
 				SdgNo:                publication.SDGNo,
 				FundingType:          publication.FundingType,
@@ -573,6 +581,115 @@ func main() {
 		} else {
 			ctx.JSON(http.StatusInternalServerError, gin.H{
 				"error": "error deleting user",
+			})
+			return
+		}
+
+	})
+
+	//table_log
+	r.GET("/table_log", func(ctx *gin.Context) {
+		res, err := client.GetLogs(ctx, &pb.ReadLogsRequest{})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_log": res.Logs,
+		})
+	})
+	r.GET("/table_log/:log_id", func(ctx *gin.Context) {
+		id := ctx.Param("log_id")
+		res, err := client.GetLog(ctx, &pb.ReadLogRequest{LogId: id})
+		if err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_log": res.Log,
+		})
+	})
+	r.POST("/table_log", func(ctx *gin.Context) {
+		var log Log
+
+		err := ctx.ShouldBind(&log)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		data := &pb.Log{
+			LogId:       log.LogID,
+			DateTime:    log.DateTime,
+			UserId:      int32(log.UserID),
+			Activity:    log.Activity,
+			Description: log.Description,
+		}
+		res, err := client.CreateLog(ctx, &pb.CreateLogRequest{
+			Log: data,
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err,
+			})
+			return
+		}
+		ctx.JSON(http.StatusCreated, gin.H{
+			"table_log": res.Log,
+		})
+	})
+	r.PUT("/table_log/:log_id", func(ctx *gin.Context) {
+		var log Log
+		err := ctx.ShouldBind(&log)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		res, err := client.UpdateLog(ctx, &pb.UpdateLogRequest{
+			Log: &pb.Log{
+				LogId:       log.LogID,
+				DateTime:    log.DateTime,
+				UserId:      int32(log.UserID),
+				Activity:    log.Activity,
+				Description: log.Description,
+			},
+		})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		ctx.JSON(http.StatusOK, gin.H{
+			"table_log": res.Log,
+		})
+		return
+
+	})
+	r.DELETE("/table_log/:log_id", func(ctx *gin.Context) {
+		id := ctx.Param("log_id")
+		res, err := client.DeleteLog(ctx, &pb.DeleteLogRequest{LogId: id})
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		if res.Success == true {
+			ctx.JSON(http.StatusOK, gin.H{
+				"message": "Log deleted successfully",
+			})
+			return
+		} else {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": "error deleting log",
 			})
 			return
 		}

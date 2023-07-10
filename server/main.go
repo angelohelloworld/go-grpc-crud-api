@@ -32,8 +32,8 @@ type Author struct {
 	TypeofAuthor string
 	Affiliation  string
 	AuthorEmail  string
-	CreatedAt    time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt    time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt    time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt    time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type IP_Asset struct {
@@ -50,8 +50,8 @@ type IP_Asset struct {
 	Hyperlink          string
 	Status             string
 	Certificate        string
-	CreatedAt          time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt          time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt          time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt          time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type Publication struct {
@@ -65,15 +65,15 @@ type Publication struct {
 	TitleOfPaper         string
 	TypeOfPublication    string
 	FundingSource        string
-	NumberOfCitations    int32
+	NumberOfCitation     int32
 	GoogleScholarDetails string
 	SDGNo                string
 	FundingType          string
 	NatureOfFunding      string
 	Publisher            string
 	Abstract             string
-	CreatedAt            time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt            time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt            time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt            time.Time `gorm:"autoUpdateTime:true"`
 }
 
 type User struct {
@@ -87,8 +87,18 @@ type User struct {
 	UserFname   string
 	UserLname   string
 	UserMname   string
-	CreatedAt   time.Time `gorm:"autoCreateTime:false"`
-	UpdatedAt   time.Time `gorm:"autoUpdateTime:false"`
+	CreatedAt   time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime:true"`
+}
+
+type Log struct {
+	LogID       string `gorm:"primarykey"`
+	DateTime    string
+	UserID      int32
+	Activity    string
+	Description string
+	CreatedAt   time.Time `gorm:"autoCreateTime:true"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime:true"`
 }
 
 func DatabaseConnection() {
@@ -113,6 +123,7 @@ func DatabaseConnection() {
 	DB.AutoMigrate(&IP_Asset{})
 	DB.AutoMigrate(&Publication{})
 	DB.AutoMigrate(&User{})
+	DB.AutoMigrate(&Log{})
 
 	fmt.Println("Database connection successful...")
 }
@@ -387,7 +398,7 @@ func (*server) CreatePublication(ctx context.Context, req *pb.CreatePublicationR
 		TitleOfPaper:         publication.GetTitleOfPaper(),
 		TypeOfPublication:    publication.GetTypeOfPublication(),
 		FundingSource:        publication.GetFundingSource(),
-		NumberOfCitations:    publication.GetNumberOfCitation(),
+		NumberOfCitation:     publication.GetNumberOfCitation(),
 		GoogleScholarDetails: publication.GetGoogleScholarDetails(),
 		SDGNo:                publication.GetSdgNo(),
 		FundingType:          publication.GetFundingType(),
@@ -444,7 +455,7 @@ func (*server) GetPublication(ctx context.Context, req *pb.ReadPublicationReques
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitation:     publication.NumberOfCitations,
+			NumberOfCitation:     publication.NumberOfCitation,
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
@@ -484,7 +495,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 			TitleOfPaper:         reqPublication.TitleOfPaper,
 			TypeOfPublication:    reqPublication.TypeOfPublication,
 			FundingSource:        reqPublication.FundingSource,
-			NumberOfCitations:    reqPublication.NumberOfCitation,
+			NumberOfCitation:     reqPublication.NumberOfCitation,
 			GoogleScholarDetails: reqPublication.GoogleScholarDetails,
 			SDGNo:                reqPublication.SdgNo,
 			FundingType:          reqPublication.FundingType,
@@ -509,7 +520,7 @@ func (*server) UpdatePublication(ctx context.Context, req *pb.UpdatePublicationR
 			TitleOfPaper:         publication.TitleOfPaper,
 			TypeOfPublication:    publication.TypeOfPublication,
 			FundingSource:        publication.FundingSource,
-			NumberOfCitation:     publication.NumberOfCitations,
+			NumberOfCitation:     publication.NumberOfCitation,
 			GoogleScholarDetails: publication.GoogleScholarDetails,
 			SdgNo:                publication.SDGNo,
 			FundingType:          publication.FundingType,
@@ -655,6 +666,107 @@ func (*server) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.D
 	}
 
 	return &pb.DeleteUserResponse{
+		Success: true,
+	}, nil
+}
+
+// Log
+func (*server) CreateLog(ctx context.Context, req *pb.CreateLogRequest) (*pb.CreateLogResponse, error) {
+	fmt.Println("Create Log")
+	log := req.GetLog()
+
+	data := Log{
+		LogID:       log.GetLogId(),
+		DateTime:    log.GetDateTime(),
+		UserID:      log.GetUserId(),
+		Activity:    log.GetActivity(),
+		Description: log.GetDescription(),
+	}
+
+	res := DB.Table("table_log").Create(&data)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("log creation unsuccessful")
+	}
+
+	return &pb.CreateLogResponse{
+		Log: &pb.Log{
+			LogId:       log.GetLogId(),
+			DateTime:    log.GetDateTime(),
+			UserId:      log.GetUserId(),
+			Activity:    log.GetActivity(),
+			Description: log.GetDescription(),
+		},
+	}, nil
+}
+
+func (*server) GetLog(ctx context.Context, req *pb.ReadLogRequest) (*pb.ReadLogResponse, error) {
+	fmt.Println("Read Log", req.GetLogId())
+	var log Log
+	res := DB.Table("table_log").Find(&log, "log_id = ?", req.GetLogId())
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Log not found")
+	}
+
+	return &pb.ReadLogResponse{
+		Log: &pb.Log{
+			LogId:       log.LogID,
+			DateTime:    log.DateTime,
+			UserId:      log.UserID,
+			Activity:    log.Activity,
+			Description: log.Description,
+		},
+	}, nil
+}
+
+func (*server) GetLogs(ctx context.Context, req *pb.ReadLogsRequest) (*pb.ReadLogsResponse, error) {
+	fmt.Println("Read Logs")
+	logs := []*pb.Log{}
+	res := DB.Table("table_log").Find(&logs)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Logs not found")
+	}
+
+	return &pb.ReadLogsResponse{
+		Logs: logs,
+	}, nil
+}
+
+func (*server) UpdateLog(ctx context.Context, req *pb.UpdateLogRequest) (*pb.UpdateLogResponse, error) {
+	fmt.Println("Update Log")
+	var log Log
+	reqLog := req.GetLog()
+
+	res := DB.Table("table_log").Model(&log).Where("log_id = ?", reqLog.GetLogId()).Updates(
+		Log{
+			DateTime:    reqLog.DateTime,
+			UserID:      reqLog.UserId,
+			Activity:    reqLog.Activity,
+			Description: reqLog.Description,
+		})
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Log not found")
+	}
+
+	return &pb.UpdateLogResponse{
+		Log: &pb.Log{
+			LogId:       log.LogID,
+			DateTime:    log.DateTime,
+			UserId:      log.UserID,
+			Activity:    log.Activity,
+			Description: log.Description,
+		},
+	}, nil
+}
+
+func (*server) DeleteLog(ctx context.Context, req *pb.DeleteLogRequest) (*pb.DeleteLogResponse, error) {
+	fmt.Println("Delete Log")
+	var log Log
+	res := DB.Table("table_log").Where("log_id = ?", req.GetLogId()).Delete(&log)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Log not found")
+	}
+
+	return &pb.DeleteLogResponse{
 		Success: true,
 	}, nil
 }
